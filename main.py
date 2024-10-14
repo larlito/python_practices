@@ -104,7 +104,7 @@
 
 
 def trace(func):
-
+    indent_count = 0
 
     def wrapper(*args, **kwargs):
         nonlocal indent_count
@@ -120,7 +120,7 @@ def trace(func):
 
         return result
 
-    indent_count = 0
+
 
     return wrapper
 
