@@ -64,39 +64,97 @@
 
 
 
-def validate_range(min_value, max_value):
-    def decorator(func):
+# def validate_range(min_value, max_value):
+#     def decorator(func):
+#
+#         def wrapper(*args,**kwargs):
+#
+#             for i in range(0,len(args), 1):
+#                 if args[i] > max_value or args[i] < min_value:
+#                     raise TypeError(f'Аргумент value имеет значение {args[i]}, что выходит за пределы [0,100]')
+#
+#
+#             for i in kwargs.keys():
+#                 if kwargs[i] > max_value or kwargs[i] < min_value:
+#                     raise TypeError(f'Аргумент value имеет значние {kwargs[i]}, что выходит за пределы [0,100]')
+#
+#             return func(*args,**kwargs)
+#         return wrapper
+#
+#     return decorator
+#
+#
+#
+#
+#
+#
+#
+#
+# @validate_range(min_value=0, max_value=100)
+# def set_percentage(value):
+#     print(f"Установлено значение: {value}%")
+#
+# set_percentage(50)     # Вывод: Установлено значение: 50%
+# set_percentage(150)    # ValueError: Аргумент 'value' имеет значение 150, что выходит за пределы [0, 100]
+#
 
-        def wrapper(*args,**kwargs):
-
-            for i in range(0,len(args), 1):
-                if args[i] > max_value or args[i] < min_value:
-                    raise TypeError(f'Аргумент value имеет значение {args[i]}, что выходит за пределы [0,100]')
-
-
-            for i in kwargs.keys():
-                if kwargs[i] > max_value or kwargs[i] < min_value:
-                    raise TypeError(f'Аргумент value имеет значние {kwargs[i]}, что выходит за пределы [0,100]')
-
-            return func(*args,**kwargs)
-        return wrapper
-
-    return decorator
 
 
 
 
 
+def trace(func):
+
+
+    def wrapper(*args, **kwargs):
+        nonlocal indent_count
+
+        indent = '  ' * indent_count
+        print(f'{indent} --> Вход в функцию {func.__name__} с аргументами {args}')
+        indent_count += 1
+
+        result = func(*args,**kwargs)
+
+        print(f'{indent} <-- Выход из функции {func.__name__} с результатом {result}')
+        indent_count -= 1
+
+        return result
+
+    indent_count = 0
+
+    return wrapper
 
 
 
-@validate_range(min_value=0, max_value=100)
-def set_percentage(value):
-    print(f"Установлено значение: {value}%")
-
-set_percentage(50)     # Вывод: Установлено значение: 50%
-set_percentage(150)    # ValueError: Аргумент 'value' имеет значение 150, что выходит за пределы [0, 100]
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+@trace
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+factorial(3)
+# Вывод:
+# --> Вход в функцию 'factorial' с аргументами (3,), {}
+#     --> Вход в функцию 'factorial' с аргументами (2,), {}
+#         --> Вход в функцию 'factorial' с аргументами (1,), {}
+#             --> Вход в функцию 'factorial' с аргументами (0,), {}
+#             <-- Выход из функции 'factorial' с результатом 1
+#         <-- Выход из функции 'factorial' с результатом 1
+#     <-- Выход из функции 'factorial' с результатом 2
+# <-- Выход из функции 'factorial' с результатом 6
